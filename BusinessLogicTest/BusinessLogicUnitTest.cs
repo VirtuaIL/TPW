@@ -53,10 +53,18 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         int numberOfBalls2Create = 10;
         newInstance.Start(
           numberOfBalls2Create,
-          (startingPosition, ball) => { called++; Assert.IsNotNull(startingPosition); Assert.IsNotNull(ball); });
-        Assert.AreEqual<int>(1, called);
+          (startingPosition, ball) => 
+          { 
+              called++; 
+              Assert.IsNotNull(startingPosition); 
+              Assert.IsNotNull(ball); 
+          }
+          );
+        Assert.AreEqual<int>(numberOfBalls2Create, called);
         Assert.IsTrue(dataLayerFixcure.StartCalled);
         Assert.AreEqual<int>(numberOfBalls2Create, dataLayerFixcure.NumberOfBallseCreated);
+        Assert.AreEqual<int>(numberOfBalls2Create, called);
+        newInstance.CheckNumberOfBalls(x => Assert.AreEqual<int>(10, x));
       }
     }
 
@@ -67,7 +75,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       { }
 
-      public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
+      public override void Start(int numberOfBalls, double width, double height, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
       }
@@ -82,7 +90,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         Disposed = true;
       }
 
-      public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
+      public override void Start(int numberOfBalls, double width, double height, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
       }
@@ -96,11 +104,15 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
       public override void Dispose()
       { }
 
-      public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
+      public override void Start(int numberOfBalls, double width, double height, Action<IVector, Data.IBall> upperLayerHandler)
       {
         StartCalled = true;
         NumberOfBallseCreated = numberOfBalls;
-        upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
+        for (int i = 0; i < numberOfBalls; i++)
+        {
+          upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
+        }
+        //upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
       }
 
       private record DataVectorFixture : Data.IVector
@@ -111,9 +123,18 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
       private class DataBallFixture : Data.IBall
       {
-        public IVector Velocity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //public IVector Velocity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IVector Velocity { get; set; } = new DataVectorFixture();
+
+        public IVector Position { get; private set; } = new DataVectorFixture();
 
         public event EventHandler<IVector>? NewPositionNotification = null;
+        public void SetPosition(IVector newPosition)
+        {
+          Position = newPosition;
+          NewPositionNotification?.Invoke(this, Position);
+        }
+
       }
     }
 

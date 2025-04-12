@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using UnderneathLayerAPI = TP.ConcurrentProgramming.BusinessLogic.BusinessLogicAbstractAPI;
+using TP.ConcurrentProgramming.BusinessLogic;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
 {
@@ -20,6 +21,14 @@ namespace TP.ConcurrentProgramming.Presentation.Model
   /// </summary>
   internal class ModelImplementation : ModelAbstractApi
   {
+
+    //public override Dimensions GetDimensions => UnderneathLayerAPI.GetDimensions;
+    public override double TableWidth => UnderneathLayerAPI.GetDimensions.TableWidth;
+    public override double TableHeight => UnderneathLayerAPI.GetDimensions.TableHeight;
+
+    public override double BallDiameter => UnderneathLayerAPI.GetDimensions.BallDimension;
+
+
     internal ModelImplementation() : this(null)
     { }
 
@@ -59,13 +68,17 @@ namespace TP.ConcurrentProgramming.Presentation.Model
 
     #region private
 
+    //private double TableWidth => GetDimensions.TableWidth;
+    //private double TableHeight => GetDimensions.TableHeight;
+
     private bool Disposed = false;
     private readonly IObservable<EventPattern<BallChaneEventArgs>> eventObservable = null;
     private readonly UnderneathLayerAPI layerBellow = null;
 
     private void StartHandler(BusinessLogic.IPosition position, BusinessLogic.IBall ball)
     {
-      ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = 20.0 };
+      ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = BallDiameter };
+      //ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = 20.0 };
       BallChanged.Invoke(this, new BallChaneEventArgs() { Ball = newBall });
     }
 

@@ -86,6 +86,10 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
         return new NullDisposable();
       }
 
+      public override double TableWidth => 400.0;
+      public override double TableHeight => 400.0;
+      public override double BallDiameter => 10.0;
+
       #endregion ModelAbstractApi
 
       #region private
@@ -136,6 +140,10 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       {
         Disposed = true;
       }
+
+      public override double TableWidth => 400.0;
+      public override double TableHeight => 400.0;
+      public override double BallDiameter => 10.0;
 
       #endregion ModelAbstractApi
 

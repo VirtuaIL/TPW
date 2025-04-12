@@ -30,6 +30,9 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 
     #endregion ctor
 
+    public double TableWidth => ModelLayer.TableWidth;
+    public double TableHeight => ModelLayer.TableHeight;
+
     #region public API
 
     public void Start(int numberOfBalls)

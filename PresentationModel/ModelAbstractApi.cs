@@ -9,6 +9,7 @@
 
 using System;
 using System.ComponentModel;
+//using TP.ConcurrentProgramming.BusinessLogic;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
 {
@@ -21,6 +22,14 @@ namespace TP.ConcurrentProgramming.Presentation.Model
 
   public abstract class ModelAbstractApi : IObservable<IBall>, IDisposable
   {
+
+    //public abstract Dimensions GetDimensions { get; }
+    public abstract double TableWidth { get; }
+    public abstract double TableHeight { get; }
+
+    public abstract double BallDiameter { get; }
+
+
     public static ModelAbstractApi CreateModel()
     {
       return modelInstance.Value;
