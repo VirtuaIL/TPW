@@ -35,7 +35,7 @@ namespace TP.ConcurrentProgramming.Presentation.Model
     public double BallDiameter_scaled => GetDimensions.BallDimension * Scale;
 
 
-    public static readonly double Scale = 0.5;
+    public static readonly double Scale = 1.0;
 
     #region IObservable
 
