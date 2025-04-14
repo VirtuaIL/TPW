@@ -9,7 +9,7 @@
 
 using System;
 using System.Collections.ObjectModel;
-
+using System.Windows.Input;
 using TP.ConcurrentProgramming.Presentation.Model;
 using TP.ConcurrentProgramming.Presentation.ViewModel.MVVMLight;
 using ModelIBall = TP.ConcurrentProgramming.Presentation.Model.IBall;
@@ -31,11 +31,46 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
     {
       ModelLayer = modelLayerAPI == null ? ModelAbstractApi.CreateModel() : modelLayerAPI;
       Observer = ModelLayer.Subscribe<ModelIBall>(x => Balls.Add(x));
+      StartCommand = new RelayCommand(() => Start(BallCount), () => CanStart && BallCount > 0);
+
     }
 
     #endregion ctor
 
     #region public API
+
+    private int _ballCount = 10;
+    public int BallCount
+    {
+      get => _ballCount;
+      set
+      {
+        if (_ballCount != value)
+        {
+          _ballCount = value;
+          RaisePropertyChanged();
+          (StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+      }
+    }
+
+    private bool _canStart = true;
+    public bool CanStart
+    {
+      get => _canStart;
+      set
+      {
+        if (_canStart != value)
+        {
+          _canStart = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+
+
+    public ICommand StartCommand { get; }
 
     public void Start(int numberOfBalls)
     {
@@ -43,6 +78,8 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
         throw new ObjectDisposedException(nameof(MainWindowViewModel));
       ModelLayer.Start(numberOfBalls);
       Observer.Dispose();
+
+      CanStart = false; 
     }
 
     public ObservableCollection<ModelIBall> Balls { get; } = new ObservableCollection<ModelIBall>();
