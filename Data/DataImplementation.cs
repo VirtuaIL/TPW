@@ -15,19 +15,24 @@ namespace TP.ConcurrentProgramming.Data
 {
   internal class DataImplementation : DataAbstractAPI
   {
-        #region ctor
+    #region ctor
 
-        public DataImplementation()
-        {
-            //MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
-        }
-
-        #endregion ctor
-
-        #region DataAbstractAPI
-
-        public override void Start(int numberOfBalls, double tableWidth, double tableHeight, Action<IVector, IBall> upperLayerHandler)
+    public DataImplementation()
     {
+      MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(16));
+    }
+
+    #endregion ctor
+
+    #region DataAbstractAPI
+
+    public override void Start(int numberOfBalls, double scale, double diameter ,double tableWidth, double tableHeight, Action<IVector, IBall> upperLayerHandler)
+    {
+      Scale = scale;
+      TableHeight = tableHeight * scale;
+      TableWidth = tableWidth * scale;
+      BallDiameter = diameter * scale;
+
       if (Disposed)
         throw new ObjectDisposedException(nameof(DataImplementation));
       if (upperLayerHandler == null)
@@ -36,11 +41,13 @@ namespace TP.ConcurrentProgramming.Data
       for (int i = 0; i < numberOfBalls; i++)
       {
         //Vector startingPosition = new(random.Next(100, 400 - 100), random.Next(100, 400 - 100));
+        //Ball newBall = new(startingPosition, startingPosition);
+        //upperLayerHandler(startingPosition, newBall);
+        //BallsList.Add(newBall);
         Vector startingPosition = new(random.Next(0, (int)tableWidth), random.Next(0, (int)tableHeight));
-
         Ball newBall = new(startingPosition, startingPosition);
         upperLayerHandler(startingPosition, newBall);
-
+        BallsList.Add(newBall);
       }
     }
 
@@ -52,11 +59,11 @@ namespace TP.ConcurrentProgramming.Data
     {
       if (!Disposed)
       {
-        //if (disposing)
-        //{
-        //  //MoveTimer.Dispose();
-        //  //BallsList.Clear();
-        //}
+        if (disposing)
+        {
+          MoveTimer.Dispose();
+          BallsList.Clear();
+        }
         Disposed = true;
       }
       else
@@ -76,39 +83,87 @@ namespace TP.ConcurrentProgramming.Data
 
     //private bool disposedValue;
     private bool Disposed = false;
+    private double TableWidth;
+    private double TableHeight;
+    private double BallDiameter;
+    private double Scale;
 
-        ////private readonly Timer MoveTimer;
-        //private Random RandomGenerator = new();
-        //private List<Ball> BallsList = [];
+    private readonly Timer MoveTimer;
+    private Random RandomGenerator = new();
+    private List<Ball> BallsList = [];
 
-        //private void Move(object? x)
-        //{
-        //  foreach (Ball item in BallsList)
-        //    item.Move(new Vector((RandomGenerator.NextDouble() - 0.5) * 10, (RandomGenerator.NextDouble() - 0.5) * 10));
-        //}
+    //private internal void Move(object? x)
+    internal void Move(object? x)
+    {
+        double radius = BallDiameter;
 
-        #endregion private
+      foreach (Ball item in BallsList)
+      {
+        //item.Move(
+        //    new Vector(
+        //        (RandomGenerator.NextDouble() - 0.5) * 10, 
+        //        (RandomGenerator.NextDouble() - 0.5) * 10)
+        //    );
 
-        #region TestingInfrastructure
+        IVector pos = item.Position;
+        IVector vel = new Vector(
+            (RandomGenerator.NextDouble() - 0.5) * 10 * Scale,
+            (RandomGenerator.NextDouble() - 0.5) * 10 * Scale);
 
-        //[Conditional("DEBUG")]
-        //internal void CheckBallsList(Action<IEnumerable<IBall>> returnBallsList)
-        //{
-        //    returnBallsList(BallsList);
-        //}
+        double newX = pos.x + vel.x;
+        double newY = pos.y + vel.y;
 
-        //[Conditional("DEBUG")]
-        //internal void CheckNumberOfBalls(Action<int> returnNumberOfBalls)
-        //{
-        //    returnNumberOfBalls(BallsList.Count);
-        //}
-
-        [Conditional("DEBUG")]
-        internal void CheckObjectDisposed(Action<bool> returnInstanceDisposed)
+        if (newX < radius || newX > TableWidth - radius)
         {
-            returnInstanceDisposed(Disposed);
+          vel = new Vector(-vel.x, vel.y);
+          newX = Clamp(newX, radius, TableWidth - radius);
         }
 
-        #endregion TestingInfrastructure
+        if (newY < radius || newY > TableHeight - radius)
+        {
+          vel = new Vector(vel.x, -vel.y);
+          newY = Clamp(newY, radius, TableHeight - radius);
+        }
+
+        item.Velocity = vel;
+        Vector delta = new Vector(newX - pos.x, newY - pos.y);
+        item.Move(delta);
+
+
+      }
     }
+
+    private double Clamp(double value, double min, double max)
+    {
+      if (value < min)
+        return min;
+      if (value > max)
+        return max;
+      return value;
+    }
+
+    #endregion private
+
+    #region TestingInfrastructure
+
+    [Conditional("DEBUG")]
+    internal void CheckBallsList(Action<IEnumerable<IBall>> returnBallsList)
+    {
+      returnBallsList(BallsList);
+    }
+
+    [Conditional("DEBUG")]
+    internal void CheckNumberOfBalls(Action<int> returnNumberOfBalls)
+    {
+      returnNumberOfBalls(BallsList.Count);
+    }
+
+    [Conditional("DEBUG")]
+    internal void CheckObjectDisposed(Action<bool> returnInstanceDisposed)
+    {
+      returnInstanceDisposed(Disposed);
+    }
+
+    #endregion TestingInfrastructure
+  }
 }

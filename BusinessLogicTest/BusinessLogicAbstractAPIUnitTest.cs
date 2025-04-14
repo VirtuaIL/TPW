@@ -8,7 +8,6 @@
 //
 //_____________________________________________________________________________________________________________________________________
 
-using System.Reflection.Metadata.Ecma335;
 using TP.ConcurrentProgramming.BusinessLogic;
 
 namespace TP.ConcurrentProgramming.BusinessLogic.Test
@@ -29,8 +28,8 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     [TestMethod]
     public void GetDimensionsTestMethod()
     {
-      double scale = BusinessLogicAbstractAPI.Scale;
-      Assert.AreEqual<Dimensions>(new(3.0*scale, 40.0*scale, 40.0*scale), BusinessLogicAbstractAPI.GetDimensions);
+      //double scale = BusinessLogicAbstractAPI.;
+      Assert.AreEqual<Dimensions>(new(30.0, 400.0, 400.0), BusinessLogicAbstractAPI.GetDimensions);
     }
   }
 }

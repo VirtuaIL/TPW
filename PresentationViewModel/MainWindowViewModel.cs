@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+
 using TP.ConcurrentProgramming.Presentation.Model;
 using TP.ConcurrentProgramming.Presentation.ViewModel.MVVMLight;
 using ModelIBall = TP.ConcurrentProgramming.Presentation.Model.IBall;
@@ -17,6 +18,10 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 {
   public class MainWindowViewModel : ViewModelBase, IDisposable
   {
+    public double TableWidth => ModelLayer.TableWidth_scaled;
+
+    public double TableHeight => ModelLayer.TableHeight_scaled;
+
     #region ctor
 
     public MainWindowViewModel() : this(null)
@@ -29,9 +34,6 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
     }
 
     #endregion ctor
-
-    public double TableWidth => ModelLayer.TableWidth;
-    public double TableHeight => ModelLayer.TableHeight;
 
     #region public API
 

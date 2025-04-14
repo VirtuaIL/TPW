@@ -12,11 +12,11 @@ namespace TP.ConcurrentProgramming.Data
 {
   internal class Ball : IBall
   {
-    
     #region ctor
 
     internal Ball(Vector initialPosition, Vector initialVelocity)
     {
+      //Position = initialPosition;
       _position = initialPosition;
       Velocity = initialVelocity;
     }
@@ -30,29 +30,25 @@ namespace TP.ConcurrentProgramming.Data
     public IVector Velocity { get; set; }
 
     public IVector Position => _position;
+
     #endregion IBall
 
-        #region private
+    #region private
 
-        private Vector _position;
+    private Vector _position;
 
     private void RaiseNewPositionChangeNotification()
     {
       NewPositionNotification?.Invoke(this, Position);
     }
 
-    //internal void Move(Vector delta)
-    //{
-    //  _position = new Vector(Position.x + delta.x, Position.y + delta.y);
-    //  RaiseNewPositionChangeNotification();
-    //}
-
-    public void SetPosition(IVector newPosition)
+    internal void Move(Vector delta)
     {
-        _position = new Vector(newPosition.x, newPosition.y);
-        RaiseNewPositionChangeNotification();
+      //Position = new Vector(Position.x + delta.x, Position.y + delta.y);
+      _position = new Vector(_position.x + delta.x, _position.y + delta.y);
+      RaiseNewPositionChangeNotification();
     }
 
-        #endregion private
-    }
+    #endregion private
+  }
 }

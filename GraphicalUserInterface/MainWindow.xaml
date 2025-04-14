@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TP.ConcurrentProgramming.Presentation.ViewModel;assembly=TP.ConcurrentProgramming.PresentationViewModel"
         mc:Ignorable="d"
-        Title="Presentation layer targeting reactive behaviour" Height="auto" Width="auto">
+        Title="Presentation layer targeting reactive behaviour" Height="auto" Width="auto" d:DesignHeight="981.163" d:DesignWidth="966.914">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>

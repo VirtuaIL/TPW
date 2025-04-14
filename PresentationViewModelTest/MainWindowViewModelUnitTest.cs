@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.Reactive;
 using System.Reactive.Linq;
+using TP.ConcurrentProgramming.BusinessLogic;
 using TP.ConcurrentProgramming.Presentation.Model;
 using ModelIBall = TP.ConcurrentProgramming.Presentation.Model.IBall;
 
@@ -80,15 +81,14 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
         Started = numberOfBalls;
       }
 
+      
       public override IDisposable Subscribe(IObserver<ModelIBall> observer)
       {
         Subscribed++;
         return new NullDisposable();
       }
 
-      public override double TableWidth => 400.0;
-      public override double TableHeight => 400.0;
-      public override double BallDiameter => 10.0;
+      public override Dimensions GetDimensions => throw new NotImplementedException();
 
       #endregion ModelAbstractApi
 
@@ -140,10 +140,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
       {
         Disposed = true;
       }
-
-      public override double TableWidth => 400.0;
-      public override double TableHeight => 400.0;
-      public override double BallDiameter => 10.0;
+      public override Dimensions GetDimensions => throw new NotImplementedException();
 
       #endregion ModelAbstractApi
 
