@@ -45,9 +45,10 @@ namespace TP.ConcurrentProgramming.Presentation.Model
       return eventObservable.Subscribe(x => observer.OnNext(x.EventArgs.Ball), ex => observer.OnError(ex), () => observer.OnCompleted());
     }
 
+
     public override void Start(int numberOfBalls)
     {
-      layerBellow.Start(numberOfBalls, Scale, StartHandler);
+      layerBellow.Start(numberOfBalls, StartHandler);
     }
 
     public override Dimensions GetDimensions => UnderneathLayerAPI.GetDimensions;
@@ -69,7 +70,11 @@ namespace TP.ConcurrentProgramming.Presentation.Model
     private void StartHandler(BusinessLogic.IPosition position, BusinessLogic.IBall ball)
     {
       //ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = 20.0 };
-      ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = BallDiameter_scaled };
+      //ModelBall newBall = new ModelBall(position.x, position.y, ball) { Diameter = BallDiameter_scaled };
+      ModelBall newBall = new ModelBall(position.x * Scale, position.y * Scale, ball)
+        {
+          Diameter = UnderneathLayerAPI.GetDimensions.BallDimension * Scale
+        };
       BallChanged.Invoke(this, new BallChaneEventArgs() { Ball = newBall });
     }
 

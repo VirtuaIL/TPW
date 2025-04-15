@@ -79,7 +79,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
       ModelLayer.Start(numberOfBalls);
       Observer.Dispose();
 
-      CanStart = false; 
+      CanStart = false;
     }
 
     public ObservableCollection<ModelIBall> Balls { get; } = new ObservableCollection<ModelIBall>();

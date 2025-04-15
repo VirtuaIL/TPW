@@ -43,7 +43,7 @@ namespace TP.ConcurrentProgramming.Data.Test
       Assert.IsNotNull(ballsList);
       newInstance.CheckNumberOfBalls(x => Assert.AreEqual<int>(0, x));
       Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Dispose());
-      Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0,1.0,10.0,400.0,400.0, (position, ball) => { }));
+      Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, (position, ball) => { }));
     }
 
     [TestMethod]
@@ -53,16 +53,12 @@ namespace TP.ConcurrentProgramming.Data.Test
       {
         int numberOfCallbackInvoked = 0;
         int numberOfBalls2Create = 10;
-        double scale = 1.0;
-        double diameter = 10.0;
-        double tableWidth = 400.0;
-        double tableHeight = 400.0;
+        //double scale = 1.0;
+        //double diameter = 10.0;
+        //double tableWidth = 400.0;
+        //double tableHeight = 400.0;
         newInstance.Start(
           numberOfBalls2Create,
-          scale,
-          diameter,
-          tableWidth,
-          tableHeight,
           (startingPosition, ball) =>
           {
             numberOfCallbackInvoked++;
@@ -82,13 +78,13 @@ namespace TP.ConcurrentProgramming.Data.Test
           using (DataImplementation dataImpl = new DataImplementation())
           {
             int numberOfBalls = 1;
-            double scale = 1.0;
-            double diameter = 10.0;
-            double tableWidth = 100.0;
-            double tableHeight = 100.0;
+            //double scale = 1.0;
+            //double diameter = 10.0;
+            double tableWidth = 400.0;
+            double tableHeight = 400.0;
             
 
-            dataImpl.Start(numberOfBalls, scale, diameter, tableWidth, tableHeight, (startingPosition, ball) => { });
+            dataImpl.Start(numberOfBalls, (startingPosition, ball) => { });
 
             List<IBall>? balls = null;
             dataImpl.CheckBallsList(x => balls = x.ToList());
@@ -99,8 +95,8 @@ namespace TP.ConcurrentProgramming.Data.Test
 
             Random rand = new Random();
                 IVector delta = new Vector(
-                       (rand.NextDouble() - 0.5) * 10 * scale,
-                       (rand.NextDouble() - 0.5) * 10 * scale
+                       (rand.NextDouble() - 0.5) * 10,
+                       (rand.NextDouble() - 0.5) * 10
                     );
 
             dataImpl.Move(delta);

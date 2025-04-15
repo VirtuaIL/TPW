@@ -11,6 +11,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using TP.ConcurrentProgramming.BusinessLogic;
 using LogicIBall = TP.ConcurrentProgramming.BusinessLogic.IBall;
@@ -21,11 +22,12 @@ namespace TP.ConcurrentProgramming.Presentation.Model
   {
     public ModelBall(double top, double left, LogicIBall underneathBall)
     {
+      //this.scale = scale;
       TopBackingField = top;
       LeftBackingField = left;
       underneathBall.NewPositionNotification += NewPositionNotification;
     }
-
+         
     #region IBall
 
     public double Top
@@ -66,11 +68,17 @@ namespace TP.ConcurrentProgramming.Presentation.Model
 
     private double TopBackingField;
     private double LeftBackingField;
+    private readonly double scale;
+    //public double Diameter { get; init; }
 
     private void NewPositionNotification(object sender, IPosition e)
     {
-      Top = e.y - Diameter; 
-      Left = e.x - Diameter;
+      //Top = e.y - Diameter; 
+      //Left = e.x - Diameter;
+      Top = e.y * ModelAbstractApi.Scale - Diameter;
+      Left = e.x * ModelAbstractApi.Scale - Diameter;
+      //Top = e.y; 
+      //Left = e.x;
     }
 
     private void RaisePropertyChanged([CallerMemberName] string propertyName = "")

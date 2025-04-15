@@ -38,7 +38,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
         TableWidth: 400.0
     );
 
-    public abstract void Start(int numberOfBalls, double scale, Action<IPosition, IBall> upperLayerHandler);
+    public abstract void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler);
 
     #region IDisposable
 

@@ -26,12 +26,12 @@ namespace TP.ConcurrentProgramming.Data
 
     #region DataAbstractAPI
 
-    public override void Start(int numberOfBalls, double scale, double diameter ,double tableWidth, double tableHeight, Action<IVector, IBall> upperLayerHandler)
+    public override void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler)
     {
-      Scale = scale;
-      TableHeight = tableHeight * scale;
-      TableWidth = tableWidth * scale;
-      BallDiameter = diameter * scale;
+      //Scale = scale;
+      //TableHeight = tableHeight * scale;
+      //TableWidth = tableWidth * scale;
+      //BallDiameter = diameter * scale;
 
       if (Disposed)
         throw new ObjectDisposedException(nameof(DataImplementation));
@@ -41,10 +41,11 @@ namespace TP.ConcurrentProgramming.Data
       for (int i = 0; i < numberOfBalls; i++)
       {
         //Vector startingPosition = new(random.Next(100, 400 - 100), random.Next(100, 400 - 100));
+        Vector startingPosition = new(random.Next(0, 390), random.Next(0, 390));
         //Ball newBall = new(startingPosition, startingPosition);
         //upperLayerHandler(startingPosition, newBall);
         //BallsList.Add(newBall);
-        Vector startingPosition = new(random.Next(0, (int)tableWidth), random.Next(0, (int)tableHeight));
+        //Vector startingPosition = new(random.Next(0, (int)tableWidth), random.Next(0, (int)tableHeight));
         Ball newBall = new(startingPosition, startingPosition);
         upperLayerHandler(startingPosition, newBall);
         BallsList.Add(newBall);
@@ -83,10 +84,10 @@ namespace TP.ConcurrentProgramming.Data
 
     //private bool disposedValue;
     private bool Disposed = false;
-    private double TableWidth;
-    private double TableHeight;
-    private double BallDiameter;
-    private double Scale;
+    //private double TableWidth;
+    //private double TableHeight;
+    //private double BallDiameter;
+    //private double Scale;
 
     private readonly Timer MoveTimer;
     private Random RandomGenerator = new();
@@ -95,7 +96,10 @@ namespace TP.ConcurrentProgramming.Data
     //private internal void Move(object? x)
     internal void Move(object? x)
     {
-        double radius = BallDiameter;
+        //double radius = BallDiameter;
+        double radius = 30.0;
+        double TableWidth = 400.0;
+        double TableHeight = 400.0;
 
       foreach (Ball item in BallsList)
       {
@@ -107,8 +111,8 @@ namespace TP.ConcurrentProgramming.Data
 
         IVector pos = item.Position;
         IVector vel = new Vector(
-            (RandomGenerator.NextDouble() - 0.5) * 10 * Scale,
-            (RandomGenerator.NextDouble() - 0.5) * 10 * Scale);
+            (RandomGenerator.NextDouble() - 0.5) * 10,
+            (RandomGenerator.NextDouble() - 0.5) * 10);
 
         double newX = pos.x + vel.x;
         double newY = pos.y + vel.y;
