@@ -64,10 +64,20 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
     private class DataLayerConstructorFixcure : Data.DataAbstractAPI
     {
-      public override void Dispose()
-      { }
+    public override IVector CreateVector(double x, double y)
+    {
+        throw new NotImplementedException();
+    }
 
-      public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
+    public override void Dispose()
+{ }
+
+    public override List<Data.IBall> getAllBalls()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
       }
@@ -77,12 +87,22 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
     {
       internal bool Disposed = false;
 
-      public override void Dispose()
+    public override IVector CreateVector(double x, double y)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Dispose()
       {
         Disposed = true;
       }
 
-      public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
+            public override List<Data.IBall> getAllBalls()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void Start(int numberOfBalls, Action<IVector, Data.IBall> upperLayerHandler)
       {
         throw new NotImplementedException();
       }
@@ -103,7 +123,17 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         upperLayerHandler(new DataVectorFixture(), new DataBallFixture());
       }
 
-      private record DataVectorFixture : Data.IVector
+    public override IVector CreateVector(double x, double y)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override List<Data.IBall> getAllBalls()
+    {
+        throw new NotImplementedException();
+    }
+
+    private record DataVectorFixture : Data.IVector
       {
         public double x { get; init; }
         public double y { get; init; }
@@ -115,8 +145,19 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
         public IVector Position => throw new NotImplementedException();
 
+        public bool IsMoving { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public double Radius => throw new NotImplementedException();
+
+        public double Mass => throw new NotImplementedException();
+
         public event EventHandler<IVector>? NewPositionNotification = null;
-      }
+
+        public void StartThread()
+        {
+            throw new NotImplementedException();
+        }
+    }
     }
 
     #endregion testing instrumentation
