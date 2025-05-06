@@ -19,6 +19,8 @@ namespace TP.ConcurrentProgramming.Data
       return modelInstance.Value;
     }
 
+    public abstract IVector CreateVector(double x, double y);
+    public abstract List<IBall> getAllBalls();
     #endregion Layer Factory
 
     #region public API
@@ -60,5 +62,11 @@ namespace TP.ConcurrentProgramming.Data
     IVector Velocity { get; set; }
 
     IVector Position { get; }
+
+    bool IsMoving { get; set; }
+
+    double Radius { get; }
+    double Mass { get; }
+    void StartThread();
   }
 }
