@@ -72,43 +72,74 @@ namespace TP.ConcurrentProgramming.Data.Test
     }
 
 
-    [TestMethod]
-    public void MoveTestMethod()
-    {
-          using (DataImplementation dataImpl = new DataImplementation())
-          {
-            int numberOfBalls = 1;
-            //double scale = 1.0;
-            //double diameter = 10.0;
-            double tableWidth = 400.0;
-            double tableHeight = 400.0;
+    //[TestMethod]
+    //public void MoveTestMethod()
+    //{
+    //      using (DataImplementation dataImpl = new DataImplementation())
+    //      {
+    //        int numberOfBalls = 1;
+    //        //double scale = 1.0;
+    //        //double diameter = 10.0;
+    //        double tableWidth = 400.0;
+    //        double tableHeight = 400.0;
             
 
-            dataImpl.Start(numberOfBalls, (startingPosition, ball) => { });
+    //        dataImpl.Start(numberOfBalls, (startingPosition, ball) => { });
 
-            List<IBall>? balls = null;
-            dataImpl.CheckBallsList(x => balls = x.ToList());
-            Assert.IsNotNull(balls);
-            Assert.AreEqual(1, balls.Count);
+    //        List<IBall>? balls = null;
+    //        dataImpl.CheckBallsList(x => balls = x.ToList());
+    //        Assert.IsNotNull(balls);
+    //        Assert.AreEqual(1, balls.Count);
 
-            var oldPosition = balls[0].Position;
+    //        var oldPosition = balls[0].Position;
 
-            Random rand = new Random();
-                IVector delta = new Vector(
-                       (rand.NextDouble() - 0.5) * 10,
-                       (rand.NextDouble() - 0.5) * 10
-                    );
+    //        Random rand = new Random();
+    //            IVector delta = new Vector(
+    //                   (rand.NextDouble() - 0.5) * 10,
+    //                   (rand.NextDouble() - 0.5) * 10
+    //                );
 
-            dataImpl.Move(delta);
+    //        //dataImpl.Move(delta);
             
-            var newPosition = balls[0].Position;
+    //        var newPosition = balls[0].Position;
 
-            Assert.IsFalse(oldPosition.x == newPosition.x && oldPosition.y == newPosition.y, "Pozycja kulki powinna się zmienić po ruchu.");
+    //        Assert.IsFalse(oldPosition.x == newPosition.x && oldPosition.y == newPosition.y, "Pozycja kulki powinna się zmienić po ruchu.");
     
-            Assert.IsTrue(newPosition.x >= 0 && newPosition.x <= tableWidth, "Kulka nie powinna wyjść poza szerokość planszy.");
-            Assert.IsTrue(newPosition.y >= 0 && newPosition.y <= tableHeight, "Kulka nie powinna wyjść poza wysokość planszy.");
-          }
+    //        Assert.IsTrue(newPosition.x >= 0 && newPosition.x <= tableWidth, "Kulka nie powinna wyjść poza szerokość planszy.");
+    //        Assert.IsTrue(newPosition.y >= 0 && newPosition.y <= tableHeight, "Kulka nie powinna wyjść poza wysokość planszy.");
+    //      }
+    //}
+    [TestMethod]
+public void MoveTestMethod()
+{
+    using (DataImplementation dataImpl = new DataImplementation())
+    {
+        int numberOfBalls = 1;
+        double tableWidth = 400.0;
+        double tableHeight = 400.0;
+
+        dataImpl.Start(numberOfBalls, (startingPosition, ball) => { });
+
+        List<IBall>? balls = null;
+        dataImpl.CheckBallsList(x => balls = x.ToList());
+        Assert.IsNotNull(balls);
+        Assert.AreEqual(1, balls.Count);
+
+        // ⏯️ uruchom ruch (zakładamy, że mamy klasę Ball a nie tylko IBall)
+        ((Ball)balls[0]).StartThread();
+
+        var oldPosition = balls[0].Position;
+
+        Thread.Sleep(100); // 🕒 daj czas na ruch
+
+        var newPosition = balls[0].Position;
+
+        Assert.IsFalse(oldPosition.x == newPosition.x && oldPosition.y == newPosition.y, "Pozycja kulki powinna się zmienić po ruchu.");
+        Assert.IsTrue(newPosition.x >= 0 && newPosition.x <= tableWidth, "Kulka nie powinna wyjść poza szerokość planszy.");
+        Assert.IsTrue(newPosition.y >= 0 && newPosition.y <= tableHeight, "Kulka nie powinna wyjść poza wysokość planszy.");
     }
+}
+
 
   }
 }

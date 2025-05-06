@@ -28,18 +28,36 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
     private class DataBallFixture : Data.IBall
     {
-      //public Data.IVector Velocity { get; set; } = new VectorFixture(0.0, 0.0);
-      public Data.IVector Velocity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+      public Data.IVector Velocity { get; set; } = new VectorFixture(0.0, 0.0);
 
-      public Data.IVector Position { get => throw new NotImplementedException(); }
-      
-      //public Data.IVector Position => _position;
+    public Data.IVector Position { get; set; } = new VectorFixture(0.0, 0.0);
+    //public Data.IVector Velocity { get; set; }
 
-      //private Data.IVector _position = new VectorFixture(0.0, 0.0);
+    //public Data.IVector Position { get; }
+    
 
-      public event EventHandler<Data.IVector>? NewPositionNotification;
+    public double Radius => 15;
 
-      internal void Move()
+    public double Mass => 1;
+    private bool _isMoving = false;
+    public bool IsMoving
+        {
+            get => _isMoving;
+            set => _isMoving = value;
+        }
+
+    //public Data.IVector Position => _position;
+
+    //private Data.IVector _position = new VectorFixture(0.0, 0.0);
+
+    public event EventHandler<Data.IVector>? NewPositionNotification;
+
+    public void StartThread()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void Move()
       {
         NewPositionNotification?.Invoke(this, new VectorFixture(0.0, 0.0));
       }

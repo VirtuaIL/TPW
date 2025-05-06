@@ -75,8 +75,8 @@ namespace TP.ConcurrentProgramming.Presentation.Model
     {
       //Top = e.y - Diameter; 
       //Left = e.x - Diameter;
-      Top = e.y * ModelAbstractApi.Scale - Diameter;
-      Left = e.x * ModelAbstractApi.Scale - Diameter;
+      Top = e.y * ModelAbstractApi.Scale - Diameter/2;
+      Left = e.x * ModelAbstractApi.Scale - Diameter/2;
       //Top = e.y; 
       //Left = e.x;
     }

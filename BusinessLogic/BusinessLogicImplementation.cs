@@ -9,6 +9,7 @@
 //_____________________________________________________________________________________________________________________________________
 
 using System.Diagnostics;
+using System.Numerics;
 using UnderneathLayerAPI = TP.ConcurrentProgramming.Data.DataAbstractAPI;
 
 namespace TP.ConcurrentProgramming.BusinessLogic
@@ -48,12 +49,92 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       layerBellow.Start(numberOfBalls, (startingPosition, databall) => upperLayerHandler(new Position(startingPosition.x, startingPosition.x), new Ball(databall)));
     }
 
+    internal void WallCollision(Data.IBall ball)
+{
+    lock (_collisionLock)
+    {
+        double tableWidth = 400;
+        double tableHeight = 400;
+
+        double left = ball.Position.x - ball.Radius;
+        double right = ball.Position.x + 1.5 * ball.Radius;
+        double top = ball.Position.y - ball.Radius;
+        double bottom = ball.Position.y + 1.5 * ball.Radius;
+
+        // Odbicie w poziomie
+        if (left <= 0 && ball.Velocity.x < 0 || right >= tableWidth && ball.Velocity.x > 0)
+        {
+            ball.Velocity = layerBellow.CreateVector(-ball.Velocity.x, ball.Velocity.y);
+        }
+
+        // Odbicie w pionie
+        if (top <= 0 && ball.Velocity.y < 0 || bottom >= tableHeight && ball.Velocity.y > 0)
+        {
+            ball.Velocity = layerBellow.CreateVector(ball.Velocity.x, -ball.Velocity.y);
+        }
+    }
+}
+
+
+    internal void BallCollision(Data.IBall ball)
+{
+    lock (_collisionLock)
+    {
+        List<Data.IBall> balls = layerBellow.getAllBalls();
+        foreach (var otherBall in balls)
+        {
+            if (otherBall != ball)
+            {
+                // Odległość między środkami
+                double dx = ball.Position.x - otherBall.Position.x;
+                double dy = ball.Position.y - otherBall.Position.y;
+                double distance = Math.Sqrt(dx * dx + dy * dy);
+                double minDistance = ball.Radius + otherBall.Radius;
+
+                if (distance < minDistance && distance > 0.0)
+                {
+                    // Normalizacja wektora kolizji
+                    double nx = dx / distance;
+                    double ny = dy / distance;
+
+                    // Różnica prędkości
+                    double dvx = ball.Velocity.x - otherBall.Velocity.x;
+                    double dvy = ball.Velocity.y - otherBall.Velocity.y;
+
+                    // Iloczyn skalarny prędkości względem osi normalnej
+                    double impactSpeed = dvx * nx + dvy * ny;
+
+                    // Jeśli się zbliżają
+                    if (impactSpeed < 0)
+                    {
+                        double m1 = ball.Mass;
+                        double m2 = otherBall.Mass;
+
+                        double impulse = (2 * impactSpeed) / (m1 + m2);
+
+                        double v1x = ball.Velocity.x - impulse * m2 * nx;
+                        double v1y = ball.Velocity.y - impulse * m2 * ny;
+                        double v2x = otherBall.Velocity.x + impulse * m1 * nx;
+                        double v2y = otherBall.Velocity.y + impulse * m1 * ny;
+
+                        ball.Velocity = layerBellow.CreateVector(v1x, v1y);
+                        otherBall.Velocity = layerBellow.CreateVector(v2x, v2y);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
     #endregion BusinessLogicAbstractAPI
 
     #region private
 
     private bool Disposed = false;
-
+    private readonly object _collisionLock = new object();
     private readonly UnderneathLayerAPI layerBellow;
 
     #endregion private

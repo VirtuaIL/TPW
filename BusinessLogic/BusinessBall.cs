@@ -12,6 +12,9 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 {
   internal class Ball : IBall
   {
+
+    private readonly BusinessLogicImplementation business_logic = new BusinessLogicImplementation();
+
     public Ball(Data.IBall ball)
     {
       ball.NewPositionNotification += RaisePositionChangeEvent;
@@ -27,6 +30,9 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 
     private void RaisePositionChangeEvent(object? sender, Data.IVector e)
     {
+      Data.IBall dataBall = (Data.IBall)sender!;
+      business_logic.WallCollision(dataBall);
+      business_logic.BallCollision(dataBall);
       NewPositionNotification?.Invoke(this, new Position(e.x, e.y));
     }
 
