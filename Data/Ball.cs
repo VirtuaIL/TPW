@@ -29,6 +29,8 @@ namespace TP.ConcurrentProgramming.Data
 
         #region ctor
 
+        public Guid Id { get; } = Guid.NewGuid();
+
         internal Ball(Vector initialPosition, Vector initialVelocity)
         {
             _position = initialPosition;

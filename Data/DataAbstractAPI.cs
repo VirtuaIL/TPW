@@ -57,6 +57,8 @@ namespace TP.ConcurrentProgramming.Data
 
   public interface IBall
   {
+    Guid Id { get; } // ID kulki
+
     event EventHandler<IVector> NewPositionNotification;
 
     IVector Velocity { get; set; }

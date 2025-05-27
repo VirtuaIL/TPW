@@ -46,11 +46,15 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
             set => _isMoving = value;
         }
 
-    //public Data.IVector Position => _position;
+            public Guid Id => throw new NotImplementedException();
 
-    //private Data.IVector _position = new VectorFixture(0.0, 0.0);
 
-    public event EventHandler<Data.IVector>? NewPositionNotification;
+
+            //public Data.IVector Position => _position;
+
+            //private Data.IVector _position = new VectorFixture(0.0, 0.0);
+
+            public event EventHandler<Data.IVector>? NewPositionNotification;
 
     public void StartThread()
     {

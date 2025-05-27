@@ -151,7 +151,9 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
         public double Mass => throw new NotImplementedException();
 
-        public event EventHandler<IVector>? NewPositionNotification = null;
+                public Guid Id => throw new NotImplementedException();
+
+                public event EventHandler<IVector>? NewPositionNotification = null;
 
         public void StartThread()
         {
