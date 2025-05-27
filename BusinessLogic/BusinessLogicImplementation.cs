@@ -53,8 +53,10 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 {
     lock (_collisionLock)
     {
-        double tableWidth = 400;
-        double tableHeight = 400;
+        //double tableWidth = 400;
+        double tableWidth = GetDimensions.TableWidth;
+        double tableHeight = GetDimensions.TableHeight;
+        //double tableHeight = 400;
 
         double left = ball.Position.x - ball.Radius;
         double right = ball.Position.x + 1.5 * ball.Radius;
