@@ -37,6 +37,7 @@ namespace TP.ConcurrentProgramming.Data
             _velocity = initialVelocity;
             Radius = 15.0;
             Mass = 1.0;
+            FileLogger.Log($"[Data] Ball {Id} created. Pos: ({_position.x:F2},{_position.y:F2}), Vel: ({_velocity.x:F2},{_velocity.y:F2})");
         }
 
         #endregion ctor
@@ -61,10 +62,30 @@ namespace TP.ConcurrentProgramming.Data
                 lock (_velocityLock)
                     return _velocity;
             }
+            //set
+            //{
+            //    lock (_velocityLock)
+            //        _velocity = (Vector)value;
+            //}
             set
             {
+                IVector oldVelocity;
+                bool changed = false;
                 lock (_velocityLock)
-                    _velocity = (Vector)value;
+                {
+                    oldVelocity = _velocity;
+                    // Zakładając, że Vector to rekord, .Equals() zadziała poprawnie dla porównania wartości
+                    if (!_velocity.Equals(value))
+                    {
+                        _velocity = (Vector)value;
+                        changed = true;
+                    }
+                }
+                if (changed)
+                {
+                    // Użycie Id w logowaniu
+                    FileLogger.Log($"[Data] Ball {Id} velocity changed. Old: ({oldVelocity.x:F2},{oldVelocity.y:F2}), New: ({_velocity.x:F2},{_velocity.y:F2})");
+                }
             }
         }
 
@@ -74,20 +95,37 @@ namespace TP.ConcurrentProgramming.Data
         public bool IsMoving
         {
             get => _isMoving;
-            set => _isMoving = value;
+            //set => _isMoving = value;
+            set
+            {
+                if (_isMoving != value)
+                {
+                    _isMoving = value;
+                    // Użycie Id w logowaniu
+                    FileLogger.Log($"[Data] Ball {Id} IsMoving set to: {_isMoving}");
+                }
+            }
         }
 
         public void StartThread()
         {
-            Thread thread = new Thread(Move); 
-            thread.IsBackground = true;
-            thread.Name = $"BallThread_{Guid.NewGuid().ToString()[..4]}";
+            //Thread thread = new Thread(Move); 
+            //thread.IsBackground = true;
+            //thread.Name = $"BallThread_{Guid.NewGuid().ToString()[..4]}";
+            //thread.Start();
+            Thread thread = new Thread(Move)
+            {
+                IsBackground = true,
+                // Użycie części Id w nazwie wątku dla łatwiejszej identyfikacji
+                Name = $"BallThread_{Id.ToString().Substring(0, 8)}"
+            };
             thread.Start();
         }
 
         private void Move()
         {
             _isMoving = true;
+            FileLogger.Log($"[Data] Ball {Id} thread starting.");
             _stopwatch.Start();
             _lastFrameTimeSeconds = _stopwatch.Elapsed.TotalSeconds; // Czas ostatniej klatki
 
@@ -103,12 +141,26 @@ namespace TP.ConcurrentProgramming.Data
                 
                 deltaTime = Math.Min(deltaTime, 0.1); // Max 0.1 sekundy na klatkę, jak by była zbyt długa
 
+                Vector oldPosition;
+                bool positionChanged = false;
+
                 lock (_positionLock)
                 {
+                    oldPosition = _position;
                     _position = new Vector(
                       _position.x + _velocity.x * deltaTime * MOVEMENT_SCALE_FACTOR,
                       _position.y + _velocity.y * deltaTime * MOVEMENT_SCALE_FACTOR
                     );
+                    if (Math.Abs(oldPosition.x - _position.x) > 0.0001 || Math.Abs(oldPosition.y - _position.y) > 0.0001)
+                    {
+                        positionChanged = true;
+                    }
+                }
+
+                if (positionChanged)
+                {
+                    // Użycie Id w logowaniu
+                    FileLogger.Log($"[Data] Ball {Id} position. New: ({_position.x:F2},{_position.y:F2}), DeltaT: {deltaTime:F4}s");
                 }
 
                 RaiseNewPositionChangeNotification();
@@ -130,6 +182,7 @@ namespace TP.ConcurrentProgramming.Data
 
             }
             _stopwatch.Stop();
+            FileLogger.Log($"[Data] Ball {Id} thread stopped.");
         }
 
         #endregion IBall

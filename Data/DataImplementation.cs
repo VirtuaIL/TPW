@@ -46,6 +46,7 @@ namespace TP.ConcurrentProgramming.Data
             if (upperLayerHandler == null)
                 throw new ArgumentNullException(nameof(upperLayerHandler));
 
+            FileLogger.Log($"[Data] DataImplementation Start called with {numberOfBalls} balls.");
             Random random = new Random();
 
             for (int i = 0; i < numberOfBalls; i++)
@@ -84,6 +85,8 @@ namespace TP.ConcurrentProgramming.Data
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataImplementation));
             Dispose(disposing: true);
+            FileLogger.Log("[Data] DataImplementation: Attempting to shut down FileLogger.");
+            FileLogger.Shutdown();
             GC.SuppressFinalize(this);
         }
 
