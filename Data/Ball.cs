@@ -26,6 +26,7 @@ namespace TP.ConcurrentProgramming.Data
         private double _lastFrameTimeSeconds = 0;
 
         private const double MOVEMENT_SCALE_FACTOR = 50.0; // Współczynnik do skalowania ruchu
+        private const double MAX_SPEED = 10.0;
 
         #region ctor
 
@@ -69,14 +70,25 @@ namespace TP.ConcurrentProgramming.Data
             //}
             set
             {
+                Vector requestedVelocity = (Vector)value;
+                Vector finalVelocity = requestedVelocity; // Domyślnie ustawiamy żądaną prędkość
+
+                double requestedSpeed = Math.Sqrt(requestedVelocity.x * requestedVelocity.x + requestedVelocity.y * requestedVelocity.y);
+
+                if (requestedSpeed > MAX_SPEED && requestedSpeed > 0)
+                {
+                    double scale = MAX_SPEED / requestedSpeed;
+                    finalVelocity = new Vector(requestedVelocity.x * scale, requestedVelocity.y * scale);
+                }
+
                 IVector oldVelocity;
                 bool changed = false;
                 lock (_velocityLock)
                 {
                     oldVelocity = _velocity;
-                    if (!_velocity.Equals(value))
+                    if (!_velocity.Equals(finalVelocity))
                     {
-                        _velocity = (Vector)value;
+                        _velocity = finalVelocity;
                         changed = true;
                     }
                 }
