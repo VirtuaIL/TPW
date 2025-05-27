@@ -74,7 +74,6 @@ namespace TP.ConcurrentProgramming.Data
                 lock (_velocityLock)
                 {
                     oldVelocity = _velocity;
-                    // Zakładając, że Vector to rekord, .Equals() zadziała poprawnie dla porównania wartości
                     if (!_velocity.Equals(value))
                     {
                         _velocity = (Vector)value;
@@ -83,7 +82,6 @@ namespace TP.ConcurrentProgramming.Data
                 }
                 if (changed)
                 {
-                    // Użycie Id w logowaniu
                     FileLogger.Log($"[Data] Ball {Id} velocity changed. Old: ({oldVelocity.x:F2},{oldVelocity.y:F2}), New: ({_velocity.x:F2},{_velocity.y:F2})");
                 }
             }
@@ -101,7 +99,6 @@ namespace TP.ConcurrentProgramming.Data
                 if (_isMoving != value)
                 {
                     _isMoving = value;
-                    // Użycie Id w logowaniu
                     FileLogger.Log($"[Data] Ball {Id} IsMoving set to: {_isMoving}");
                 }
             }
@@ -109,14 +106,9 @@ namespace TP.ConcurrentProgramming.Data
 
         public void StartThread()
         {
-            //Thread thread = new Thread(Move); 
-            //thread.IsBackground = true;
-            //thread.Name = $"BallThread_{Guid.NewGuid().ToString()[..4]}";
-            //thread.Start();
             Thread thread = new Thread(Move)
             {
                 IsBackground = true,
-                // Użycie części Id w nazwie wątku dla łatwiejszej identyfikacji
                 Name = $"BallThread_{Id.ToString().Substring(0, 8)}"
             };
             thread.Start();
@@ -159,7 +151,6 @@ namespace TP.ConcurrentProgramming.Data
 
                 if (positionChanged)
                 {
-                    // Użycie Id w logowaniu
                     FileLogger.Log($"[Data] Ball {Id} position. New: ({_position.x:F2},{_position.y:F2}), DeltaT: {deltaTime:F4}s");
                 }
 
